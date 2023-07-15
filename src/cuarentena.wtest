@@ -1,0 +1,174 @@
+import cuarentena.*
+
+describe "cuerantena" {
+
+/*
+Todos los objetos necesarios se asumen como instancias de una clase. 
+Si el diseño de tu solución utiliza objetos bien conocidos (definidos como object) en algunos casos 
+entonces se debe remover la declaración de la variable y la línea en que se sugiere la instanciación
+para usar directamente el objeto conocido
+*/
+
+	// Objetos iniciales
+/* 
+	//Pandemia 
+	var pandemia
+    //Trabajos	
+    var programadore
+    var docente
+    var medique
+    var panadere
+    
+    //Personas
+    var milena
+    var nicolas
+    var mirta
+*/    
+    //Familia
+    //var perezGarcia
+	const programadore = new Trabajo(numeroBase=80000,bono=20000,fasePresencial=3)
+		//TODO: construir/obtener un trabajo normal con base=80000, bono=20000 y fase permitida=3
+	const docente = new Trabajo(numeroBase=15000,bono=2000,fasePresencial=5)
+		// TODO: construir/obtener un trabajo normal con base=15000, bono=2000 y fase permitida=5
+	const medique = new TrabajoSanitario(numeroBase=60000,bono=40000)
+		// TODO: construir/obtener un trabajo sanitario con base=60000 y bono=40000
+	const panadere = new TrabajoEsencial(numeroBase=30000,bono=20000)
+		// TODO construir/obtener un trabajo esencial con base=30000 y bono=20000
+		
+	const milena = new Persona(trabajos=[programadore,docente],enfermedadePreexistentes=true,edad=25)
+		//TODO: construir/obtener una persona con trabajos de programadore y docente. Tiene enfermedades preexistentes y edad=25
+	const nicolas = new Persona(trabajos=[panadere],enfermedadePreexistentes=false,edad=17)
+		//TODO: construir/obtener una persona con trabajo panadere, no tiene enfermedadesPreexistentes y edad=17 
+	const mirta = new Persona(trabajos=[medique],enfermedadePreexistentes=false,edad=67)
+		//TODO:  construir/obtener una persona con trabajo medique, not tiene enfermedadesPreexistentes  y edad=67
+		
+	const perezGarcia = new Familia(integrantes=[milena,nicolas,mirta])
+		//TODO construir/obtener una Familia con milena, nicolas y mirta como integrantes
+
+	method initialize() {
+		pandemia.fase(4)
+		//TODO: constrir/obtener una pandemia pandemia en fase 4
+		}
+
+ 	
+	test "punto 1.1: ganancia de persona" {
+		assert.equals(115000,milena.salario())
+		//TODO: verificar que milena gana 115000 
+		assert.equals(35000,nicolas.salario())
+		//TODO: verificar que nicolas gana 35000 
+		assert.equals(75000,mirta.salario())
+		//TODO: verificar que mirta gana 75000 
+	}
+
+  
+
+ 	
+	test "punto 1.2: ganancia de familia" {
+		assert.equals(225000,perezGarcia.salario())//TODO: verficiar que la familia perezGarcia gana  225000 
+	}
+
+
+ 
+	test "punto 1.3: miembros en riesgos" {
+		
+		assert.notThat(perezGarcia.ailar())
+		//TODO: verificar que la familia perezGarcia NO está aislada 
+		const familiaDeSoloMirta = new Familia(integrantes=[mirta])
+		assert.that(familiaDeSoloMirta.ailar())
+		//const familiaDeSoloMirta = //TODO: construir/obtener una Familia con mirta como unica integrante
+		//TODO: verificar que la familia familiaDeSoloMirta SI está aislada 
+	}
+
+
+ 	
+	test "punto 1.4: trabajos principales" {
+		assert.equals([programadore,panadere,medique],perezGarcia.trabajosPrincipales())
+		//TODO: verificar que los trabajos principales de la familia perezGarcia sean programadore, panadere y medique
+	}
+
+ 
+	test "punto 1.5: trabajadores inactivos" {
+		assert.equals([],perezGarcia.trabajadoresInactivos())
+		//TODO: verificar que no hay integrantes inactivos de la familia perezGarcia
+		pandemia.fase(1)
+		assert.equals([milena],perezGarcia.trabajadoresInactivos()) 
+		//TODO: cambiar la pandemia a fase 1 
+		//TODO verificar que milena es la unica trabajadora inactiva de la familia perezGarcia
+	}
+
+	
+
+	test "punto 2.1: puede realizar salida" {
+		assert.notThat(mirta.puedeSalirAcomprar())
+		//TODO: verificar que mirta NO puede salir a comprar estaInactivo,salirAcomprar,salirArealizarEjercicio,salirAcaminar
+		assert.that(nicolas.puedeSalirAcomprar())
+		assert.that(nicolas.puedeSalirArealizarEjercicio())
+		assert.that(nicolas.puedeSalirAcaminar())
+		assert.that(nicolas.puedeSalirAtrabajar())
+		//TODO: verificar que nicolas SI puede salir a comprar
+		//TODO: verificar que nicolas SI puede salir a ejercitarse
+		//TODO: verificar que nicolas SI puede salir a caminar
+		//TODO: verificar que nicolas SI puede salir a trabajar
+		
+		pandemia.fase(3)	
+		//TODO: pasar la pandemia a fase 3
+		assert.that(nicolas.puedeSalirAcomprar())
+		assert.notThat(nicolas.puedeSalirArealizarEjercicio())
+		assert.notThat(nicolas.puedeSalirAcaminar())
+		assert.that(nicolas.puedeSalirAtrabajar())
+		//TODO: verificar que nicolas SI puede salir a comprar
+		//TODO: verificar que nicolas NO puede salir a ejercitarse
+		//TODO: verificar que nicolas NO puede salir a caminar
+		//TODO: verificar que nicolas SI puede salir a trabajar
+		
+	}
+
+
+	
+	test "punto 2.2, 2.3 y 2.4.1: salir a pasear ok " {
+		nicolas.salirAcomprar()
+		//TODO hacer que nicolas salga a comprar
+		nicolas.salirAtrabajar()
+		//TODO hacer que nicolas salga a trabajar
+		nicolas.salirAcomprar()
+		//TODO hacer que nicolas salga a comprar 
+		assert.equals(["salirAcomprar","salirAtrabajar","salirAcomprar"],nicolas.salidas()) 
+		//TODO verificar que las salidas de nicolas son salirAComprar, salirATrabajar y salirAComprar
+	}
+
+
+
+	test "punto 2.2, 2.3 y 2.4.2: salir a pasear no ok" {
+		assert.notThat(milena.salirAcomprar())
+		//TODO hacer que milena salga a comprar (No se puede!)
+		assert.equals([],milena.salidas()) 
+		//TODO verificar que milena no tenga salidas
+	}
+
+
+
+	test "punto 3.1: Salida familiar ok" {
+		perezGarcia.todosAcomprar()
+		// TODO: hacer que perezGarcia salga a comprar 
+		
+		assert.equals(["salirAcomprar"],nicolas.salidas()) 
+		//TODO: verificar que nicolas tenga la salida salirAComprar 
+		assert.equals([],mirta.salidas()) 
+		//TODO: verificar que mirta no tenga salidas
+		assert.equals([],milena.salidas()) 
+		//TODO: verificar que milena no tenga salidas 
+	}
+
+
+	test "punto 3.1: Salida familiar no ok" {
+		const familiaMirtaYMilena = new Familia(integrantes=[mirta,milena])
+		//TODO: hacer que la familiaMirtaYMilena salga a comprar (no se puede!)
+		familiaMirtaYMilena.todosAcomprar()
+		assert.equals([],mirta.salidas()) 
+		//TODO: verificar que mirta no tenga salidas
+		assert.equals([],milena.salidas()) 
+		//TODO: verificar que milena no tenga salidas
+	}
+
+	
+}
